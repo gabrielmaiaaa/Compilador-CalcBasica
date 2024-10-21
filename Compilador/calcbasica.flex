@@ -1,6 +1,8 @@
+/* Gabriel Maia Alves Araújo - 2022005689 */
+
 %{
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h
 
 int yywrap(void) { return 1; }
 void yyerror(const char *s)
@@ -17,21 +19,21 @@ FIM_ENQUANTO             "FIM_ENQUANTO"
 FIM                      "FIM"
 INICIO                   "INICIO"
 LEIA                     "LEIA"
-OPERADOR_ADICAO          "+"
-OPERADOR_ATRIBUICAO      ":="
-OPERADOR_DIVISAO         "\\"
-OPERADOR_PRODUTO         "*"
-OPERADOR_SUBTRACAO       "-"
-OPERADOR_IGUAL           ".I."
-OPERADOR_MAIOR           ".M."
+ADICAO                   "+"
+ATRIBUICAO               ":="
+DIVISAO                  "\"
+PRODUTO                  "*"
+SUBTRACAO                "-"
+IGUAL                    ".I."
+MAIOR                    ".M."
 TIPO_CADEIA              "CADEIA"
 TIPO_CARACTER            "CARACTER"
 TIPO_INTEIRO             "INTEIRO"
 TIPO_LISTA_INT           "LISTA_INT"
 TIPO_LISTA_REAL          "LISTA_REAL"
 TIPO_REAL                "REAL"
-ABRE                     "("
-FECHA                    ")"
+ABRE_PARENTESE           "("
+FECHA_PARENTESE          ")"
 VIRGULA                  ","
 DIGITO                   ([0-9])
 CONSTANTE_INTEIRA        ({DIGITO}+)
@@ -56,21 +58,21 @@ WHITESPACES              ([ \t\n\r]+)
 {FIM}                      { printf("TOKEN: FIM\n"); }
 {INICIO}                   { printf("TOKEN: INICIO\n"); }
 {LEIA}                     { printf("TOKEN: LEIA\n"); }
-{OPERADOR_ADICAO}          { printf("TOKEN: OPERADOR_ADICAO\n"); }
-{OPERADOR_ATRIBUICAO}      { printf("TOKEN: OPERADOR_ATRIBUICAO\n"); }
-{OPERADOR_DIVISAO}         { printf("TOKEN: OPERADOR_DIVISAO\n"); }
-{OPERADOR_PRODUTO}         { printf("TOKEN: OPERADOR_PRODUTO\n"); }
-{OPERADOR_SUBTRACAO}       { printf("TOKEN: OPERADOR_SUBTRACAO\n"); }
-{OPERADOR_IGUAL}           { printf("TOKEN: OPERADOR_IGUAL\n"); }
-{OPERADOR_MAIOR}           { printf("TOKEN: OPERADOR_MAIOR\n"); }
+{ADICAO}                   { printf("TOKEN: ADICAO\n"); }
+{ATRIBUICAO}               { printf("TOKEN: ATRIBUICAO\n"); }
+{DIVISAO}                  { printf("TOKEN: DIVISAO\n"); }
+{PRODUTO}                  { printf("TOKEN: PRODUTO\n"); }
+{SUBTRACAO}                { printf("TOKEN: SUBTRACAO\n"); }
+{IGUAL}                    { printf("TOKEN: IGUAL\n"); }
+{MAIOR}                    { printf("TOKEN: MAIOR\n"); }
 {TIPO_CADEIA}              { printf("TOKEN: TIPO_CADEIA\n"); }
 {TIPO_CARACTER}            { printf("TOKEN: TIPO_CARACTER\n"); }
 {TIPO_INTEIRO}             { printf("TOKEN: TIPO_INTEIRO\n"); }
 {TIPO_LISTA_INT}           { printf("TOKEN: TIPO_LISTA_INT\n"); }
 {TIPO_LISTA_REAL}          { printf("TOKEN: TIPO_LISTA_REAL\n"); }
 {TIPO_REAL}                { printf("TOKEN: TIPO_REAL\n"); }
-{ABRE}                     { printf("TOKEN: ABRE\n"); }
-{FECHA}                    { printf("TOKEN: FECHA\n"); }
+{ABRE_PARENTESE}           { printf("TOKEN: ABRE_PARENTESE\n"); }
+{FECHA_PARENTESE}          { printf("TOKEN: FECHA_PARENTESE\n"); }
 {VIRGULA}                  { printf("TOKEN: VIRGULA\n"); }
 {DIGITO}                   { printf("TOKEN: DIGITO\n"); }
 {CONSTANTE_INTEIRA}        { printf("TOKEN: CONSTANTE_INTEIRA\n"); }
