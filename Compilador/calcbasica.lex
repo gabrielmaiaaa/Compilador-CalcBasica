@@ -56,7 +56,9 @@ POSSIVEIS_ERROS           [ \n\t]+
 
 %%
 
+/*
 int main(int argc, char *argv[]) {
     yylex();
     return 0;
 }
+*/

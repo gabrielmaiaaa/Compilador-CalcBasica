@@ -1743,7 +1743,9 @@ int main()
 #line 57 "calcbasica.lex"
 
 
+/*
 int main(int argc, char *argv[]) {
     yylex();
     return 0;
 }
+*/
