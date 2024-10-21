@@ -7,13 +7,13 @@
 %}
 
 /* Definição de Tokens */
-DIGITO                    [0-9]
-CONSTANTE_INTEIRA         {DIGITO}+
-CONSTANTE_REAL            {DIGITO}+(\.{DIGITO}+)? 
+NUMERO                    [0-9]
+CONSTANTE_INTEIRA         {NUMERO}+
+CONSTANTE_REAL            {NUMERO}+(\.{NUMERO}+) 
 ALFABETO                  [a-zA-Z]
-VARIAVEL                  {ALFABETO}({ALFABETO}|{DIGITO})*
-CADEIA                    \'[^\']+\'
-COMENTARIOS               \{[^\}]*\}
+VARIAVEL                  {ALFABETO}({ALFABETO}|{NUMERO}|_)* 
+CADEIA                    \'[^\']+\' 
+COMENTARIOS               \{[^}]*\} 
 POSSIVEIS_ERROS           [ \n\t]+
 
 /* Gramática */
@@ -36,7 +36,6 @@ POSSIVEIS_ERROS           [ \n\t]+
 "-"                        { printf("SUBTRACAO\n"); }
 ".I."                      { printf("IGUAL\n"); }
 ".M."                      { printf("MAIOR\n"); }
-"CADEIA"                   { printf("TIPO_CADEIA\n"); }
 "CARACTER"                 { printf("TIPO_CARACTER\n"); }
 "INTEIRO"                  { printf("TIPO_INTEIRO\n"); }
 "LISTA_INT"                { printf("TIPO_LISTA_INT\n"); }
@@ -47,13 +46,12 @@ POSSIVEIS_ERROS           [ \n\t]+
 "["                        { printf("ABRE_COLCHETE\n"); }
 "]"                        { printf("FECHA_COLCHETE\n"); }
 ","                        { printf("VIRGULA\n"); }
-{DIGITO}                   { printf("DIGITO\n"); }
-{ALFABETO}                 { printf("ALFABETO\n"); }
 {CONSTANTE_INTEIRA}        { printf("CONSTANTE_INTEIRA\n"); }
 {CONSTANTE_REAL}           { printf("CONSTANTE_REAL\n"); }
 {VARIAVEL}                 { printf("VARIAVEL\n"); }
 {CADEIA}                   { printf("CADEIA\n"); }
 {COMENTARIOS}              { printf("COMENTARIO\n"); }
+.                          { /* Caractere desconhecido */ }
 {POSSIVEIS_ERROS}          { /* Ignora espaços em branco */ }
 
 %%
