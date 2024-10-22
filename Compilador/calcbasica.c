@@ -35,7 +35,7 @@ int LEIA(char *token) { return compara_token(token, "LEIA"); }
 int ESCREVA(char *token) { return compara_token(token, "ESCREVA"); }
 int CADEIA(char *token) { return compara_token(token, "CADEIA"); }
 int ATRIBUICAO(char *token) { return compara_token(token, "ATRIBUICAO"); }
-int RELACIONAL(char *token) { return compara_token(token, "MAIOR") || compara_token(token, "IGUAL"); }
+int COMPARACAO(char *token) { return compara_token(token, "MAIOR") || compara_token(token, "IGUAL"); }
 void COMENTARIO(char *token, FILE *arquivo) {
     if (compara_token(token, "COMENTARIO")) {
         token = proxtoken(arquivo);
@@ -58,8 +58,8 @@ int OPERADOR(char *token) {
            compara_token(token, "PRODUTO") || 
            compara_token(token, "DIVISAO");
 }
-int COND_SE(char *token) { return compara_token(token, "SE"); }
-int COND_ENQUANTO(char *token) { return compara_token(token, "ENQUANTO"); }
+int SE(char *token) { return compara_token(token, "SE"); }
+int ENQUANTO(char *token) { return compara_token(token, "ENQUANTO"); }
 int ENTAO(char *token) { return compara_token(token, "ENTAO"); }
 int FIM_ENQUANTO(char *token) { return compara_token(token, "FIM_ENQUANTO"); }
 int FIM_SE(char *token) { return compara_token(token, "FIM_SE"); }
@@ -69,134 +69,132 @@ int FECHA_PARENTESE(char *token) { return compara_token(token, "FECHA_PARENTESE"
 int ABRE_COLCHETE(char *token) { return compara_token(token, "ABRE_COLCHETE"); }
 int FECHA_COLCHETE(char *token) { return compara_token(token, "FECHA_COLCHETE"); }
 
-// EXPRESSÃO
-int EXPR(char *token, FILE *arquivo) {
-    if (VARIAVEL(token)) {
+int PROCESSAR(char *token, FILE *arquivo) {
+    if (VARIAVEL(token) || CONSTANTE_INTEIRA(token) || CONSTANTE_REAL(token)) {
         token = proxtoken(arquivo);
         if (OPERADOR(token)) {
             token = proxtoken(arquivo);
             if (VARIAVEL(token) || CONSTANTE_INTEIRA(token) || CONSTANTE_REAL(token)) {
-                return 1;
+                return 1; 
             } else {
                 SintaxeErro(token);
             }
         }
         return 1;
     }
-    return CONSTANTE_INTEIRA(token) || CONSTANTE_REAL(token);
-}
-
-void DECLARACOES_LINHA(char *token, FILE *arquivo) {
-    printf("DECLARACOES_LINHA\n");
-    if (VIRGULA(token)) {
-        token = proxtoken(arquivo);
-        if (VARIAVEL(token)) {
-            token = proxtoken(arquivo);
-            DECLARACOES_LINHA(token, arquivo);
-        }
-    }
+    return 0; 
 }
 
 int DECLARACOES(char *token, FILE *arquivo) {
-    if (TIPO(token)) {
+    while (TIPO(token)) {
         token = proxtoken(arquivo);
-        if (VARIAVEL(token)) {
-            token = proxtoken(arquivo);
-            DECLARACOES_LINHA(token, arquivo);
-            DECLARACOES(token, arquivo);
+        if (!VARIAVEL(token)) {
+            SintaxeErro(token);
         }
+        token = proxtoken(arquivo);
     }
     return 1;
 }
 
-int LER(char *token, FILE *arquivo) {
-    if (VIRGULA(token)) {
+int VERIFICAR(char *token, FILE *arquivo) {
+    while (VIRGULA(token)) {
         token = proxtoken(arquivo);
-        if (VARIAVEL(token)) {
-            token = proxtoken(arquivo);
-            LER(token, arquivo);
+        if (!VARIAVEL(token)) {
+            SintaxeErro(token);
         }
+        token = proxtoken(arquivo);
     }
     return 1;
 }
 
-void EXPR_COND(char *token, FILE *arquivo) {
-    if (EXPR(token, arquivo)) {
+void CONDICIONAL(char *token, FILE *arquivo) {
+    if (PROCESSAR(token, arquivo)) {
         token = proxtoken(arquivo);
-        if (RELACIONAL(token)) {
+        if (COMPARACAO(token)) {
             token = proxtoken(arquivo);
-            if (EXPR(token, arquivo)) {
-                return;
+            if (!PROCESSAR(token, arquivo)) {
+                SintaxeErro(token);
             }
         }
     }
 }
 
-void ALGORITMO(char *token, FILE *arquivo) {
-    if (LEIA(token)) {
-        token = proxtoken(arquivo);
-        if (VARIAVEL(token)) {
+void EXECUTAR_PROGRAMA(char *token, FILE *arquivo) {
+    while (1) {
+        if (LEIA(token)) {
             token = proxtoken(arquivo);
-            LER(token, arquivo);
-        }
-    }
-    if (ESCREVA(token)) {
-        token = proxtoken(arquivo);
-        if (CADEIA(token)) {
+            if (!VARIAVEL(token)) {
+                SintaxeErro(token);
+                return; 
+            }
+            VERIFICAR(token, arquivo);
+
+        } else if (ESCREVA(token)) {
             token = proxtoken(arquivo);
-            if (VIRGULA(token)) {
+            if (CADEIA(token)) {
                 token = proxtoken(arquivo);
-                if (VARIAVEL(token)) {
+                if (VIRGULA(token)) {
                     token = proxtoken(arquivo);
-                    ALGORITMO(token, arquivo);
+                    if (!VARIAVEL(token)) {
+                        SintaxeErro(token);
+                        return; 
+                    }
+                }
+            } else if (VARIAVEL(token)) {
+                token = proxtoken(arquivo);
+                if (VIRGULA(token)) {
+                    token = proxtoken(arquivo);
+                    if (!VARIAVEL(token)) {
+                        SintaxeErro(token);
+                        return; 
+                    }
                 }
             }
-        }
-        if (VARIAVEL(token)) {
+
+        } else if (SE(token)) {
             token = proxtoken(arquivo);
-            if (VIRGULA(token)) {
+            CONDICIONAL(token, arquivo);
+
+            token = proxtoken(arquivo);
+            if (ENTAO(token)) {
                 token = proxtoken(arquivo);
-                if (VARIAVEL(token)) {
-                    token = proxtoken(arquivo);
-                    ALGORITMO(token, arquivo);
-                }
+                EXECUTAR_PROGRAMA(token, arquivo); 
             }
-        }
-    }
 
-    if (COND_SE(token)) {
-        token = proxtoken(arquivo);
-        EXPR_COND(token, arquivo);
-        token = proxtoken(arquivo);
-        if (ENTAO(token)) {
+            if (FIM_SE(token)) {
+                token = proxtoken(arquivo);
+                continue; 
+            }
+
+        } else if (ENQUANTO(token)) {
             token = proxtoken(arquivo);
-            ALGORITMO(token, arquivo);
-        }
-        if (FIM_SE(token)) return;
-    }
+            CONDICIONAL(token, arquivo); 
 
-    if (COND_ENQUANTO(token)) {
-        token = proxtoken(arquivo);
-        EXPR_COND(token, arquivo);
-        token = proxtoken(arquivo);
-        if (ENTAO(token)) {
             token = proxtoken(arquivo);
-            ALGORITMO(token, arquivo);
+            if (ENTAO(token)) {
+                do {
+                    EXECUTAR_PROGRAMA(token, arquivo);
+                    token = proxtoken(arquivo); 
+                } while (PROCESSAR(token, arquivo)); 
+            }
+
+            if (FIM_ENQUANTO(token)) {
+                token = proxtoken(arquivo);
+                continue; 
+            }
+
+        } else if (FIM(token)) {
+            printf("Compilacao finalizada com sucesso\n");
+            return; 
         }
-        if (FIM_ENQUANTO(token)) return;
-    }
 
-    if (FIM(token)) {
-        printf("Compilacao finalizada com sucesso\n");
-        return;
+        token = proxtoken(arquivo); 
     }
-
-    token = proxtoken(arquivo);
-    ALGORITMO(token, arquivo);
 }
+
 
 int main() {
-    FILE *arquivo = fopen("operacao.out", "r"); // só trocar fatorial.out para operacao.out
+    FILE *arquivo = fopen("fatorial.out", "r"); // só trocar fatorial.out para operacao.out
     if (!arquivo) {
         printf("Erro ao abrir o arquivo\n");
         return 1;
@@ -216,7 +214,7 @@ int main() {
             }
         }
         DECLARACOES(token, arquivo);
-        ALGORITMO(token, arquivo);
+        EXECUTAR_PROGRAMA(token, arquivo);
     } else {
         SintaxeErro(token);
     }
